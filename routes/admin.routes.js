@@ -9,6 +9,8 @@ router.post("/register", adminController.register);
 
 // ----------------------------------------------Dashboard Details------------------------------------------------ //
 router.get("/statsdashboard", adminauth, adminController.getdashboard);
+router.get("/userbasedgender", adminauth, adminController.userbasedongender);
+router.get("/userbasedjoining", adminauth, adminController.userbasedonjoining);
 router.get("/notification", adminauth, adminController.notify);
 
 // ----------------------------------------------User Details------------------------------------------------ //

@@ -87,6 +87,49 @@ routes.getdashboard = async (req, res) => {
   }
 };
 
+routes.userbasedongender = async (req, res) => {
+  try {
+    const result = await usermodel.aggregate([
+      {
+        $group: {
+          _id: "$gender",
+          count: { $sum: 1 },
+        },
+      },
+    ]);
+    res.status(200).json({ result });
+  } catch (error) {
+    res.status(500).json({ error: "Something went wrong" });
+  }
+};
+
+routes.userbasedonjoining = async (req, res) => {
+  try {
+    // count user joined before a date
+    const resuser = await usermodel.find().sort({ joiningDate: 1 });
+
+    const result = [];
+    let count = 0;
+    let i = 0;
+    let date = new Date(resuser[i].joiningDate.split("T")[0]);
+    count++;
+    result.push({ date, count });
+
+    for (let i = 1; i < resuser.length; i++) {
+      date = new Date(resuser[i].joiningDate.split("T")[0]);
+      if (date === result[result.length - 1].date) {
+        result[result.length - 1].count++;
+      } else {
+        result.push({ date, count });
+      }
+    }
+
+    res.status(200).json({ result });
+  } catch (error) {
+    res.status(500).json({ error: "Something went wrong" });
+  }
+};
+
 routes.notify = async (req, res) => {
   try {
     const notifications = await notificationmodel
@@ -105,7 +148,7 @@ routes.getalluser = async (req, res) => {
   try {
     const users = await usermodel
       .find()
-      .select("name joiningDate dob isVerified");
+      .select("-password -otp -otpExpires -loan -transactions -investment");
     res.status(200).json({ users });
   } catch (error) {
     res.status(500).json({ error: "Something went wrong" });
