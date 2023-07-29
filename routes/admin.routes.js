@@ -39,4 +39,12 @@ router.get("/investment/:id", adminauth, adminController.getinvestmentbyuser);
 // ----------------------------------------------Transaction Details------------------------------------------------ //
 router.get("/gettransaction", adminauth, adminController.gettransaction);
 
+// ----------------------------------------------Customer Support------------------------------------------------ //
+router.get("/alltickets", adminauth, adminController.getCustomerSupport);
+router.get("/tickets/:id", adminauth, adminController.getCustomerSupportById);
+router.post("/pendingtickets", adminauth, adminController.getPendingCustomerSupport);
+
+// ----------------------------------------------Admin Details------------------------------------------------ //
+router.get("/mydetails", adminauth, adminController.getadmintrans);
+
 export default router;

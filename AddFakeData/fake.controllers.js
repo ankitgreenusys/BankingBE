@@ -3,6 +3,8 @@ import usermodel from "../models/user.model.js";
 import transactionmodel from "../models/transaction.model.js";
 import investmentmodel from "../models/investment.model.js";
 import notificationmodel from "../models/notification.model.js";
+import customerSupportModel from "../models/CustomerSupport.model.js";
+import adminModel from "../models/admin.model.js";
 
 // ----------------------------------------------Fake users------------------------------------------------ //
 
@@ -154,6 +156,50 @@ routes.faketransaction = async (req, res) => {
     }
 
     res.status(200).json({ message: "Fake transaction added successfully" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+routes.fakeadmintransaction = async (req, res) => {
+  try {
+    const admin = await adminModel.findById("64bfead7fbe0220d36a0ec6a");
+
+    const alltransactions = await transactionmodel.find({});
+
+    for (let i = 0; i < alltransactions.length; i++) {
+      admin.transactions.push(alltransactions[i]._id);
+      if (alltransactions[i].transactionType === "LoanGiven") {
+        admin.balance -= alltransactions[i].amount;
+      } else if (alltransactions[i].transactionType === "Investment") {
+        admin.balance += alltransactions[i].amount;
+      }
+    }
+
+    await admin.save();
+
+    res.status(200).json({ message: "Admin transaction added successfully" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+routes.fakecustomersupport = async (req, res) => {
+  try {
+    const users = await usermodel.find({});
+    for (let i = 0; i < users.length; i++) {
+      const dta = {
+        user: users[i]._id,
+        subject: "Subject " + i,
+        message: "This is a fake message " + i,
+        status: i % 2 ? "Pending" : "Resolved",
+      };
+      const newcustomersupport = new customerSupportModel(dta);
+      await newcustomersupport.save();
+    }
+    res
+      .status(200)
+      .json({ message: "Fake customer support added successfully" });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
