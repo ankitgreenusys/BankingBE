@@ -286,6 +286,34 @@ routes.setsavingpro = async (req, res) => {
 
 // ----------------------------------------------Loan Details------------------------------------------------ //
 
+routes.getloanbyid = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const loan = await LoanModel.findById(id)
+      .populate("giventransactionId")
+      .populate("repaymenttransactionId")
+      .populate("user");
+
+    // Total Paid amount
+    let totalpaid = 0;
+    let remaining = 0;
+
+    if (loan.giventransactionId) {
+      loan.repaymenttransactionId.forEach((transaction) => {
+        totalpaid += transaction.amount;
+      });
+
+      // remaining amount
+      remaining = loan.amount - totalpaid;
+    }
+
+    res.status(200).json({ loan, totalpaid, remaining });
+  } catch (error) {
+    res.status(500).json({ error: "Something went wrong" });
+  }
+};
+
 routes.getpendingloan = async (req, res) => {
   try {
     const loans = await LoanModel.find({ status: "Pending" }).populate("user");

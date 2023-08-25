@@ -16,12 +16,15 @@ const transactionSchema = new mongoose.Schema({
   },
   transactionType: {
     type: String,
-    enum: ["Deposit", "Withdraw", "LoanGiven", "LoanPaid", "Investment"],
+    enum: ["Deposit", "Withdraw", "LoanGiven", "LoanPaid", "Investment","LoanRepayment"],
     required: true,
   },
   date: {
     type: Date,
     default: Date.now(),
+  },
+  remark: {
+    type: String,
   },
 });
 

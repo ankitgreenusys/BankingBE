@@ -42,7 +42,7 @@ const loanSchema = new mongoose.Schema({
     ref: "Transaction",
   },
   repaymenttransactionId: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: [mongoose.Schema.Types.ObjectId],
     ref: "Transaction",
   },
   status: {
@@ -53,6 +53,9 @@ const loanSchema = new mongoose.Schema({
   createdAt: {
     type: Date,
     default: Date.now,
+  },
+  remark: {
+    type: String,
   },
 });
 

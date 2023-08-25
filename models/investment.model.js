@@ -26,6 +26,9 @@ const investmentSchema = new mongoose.Schema({
     type: Date,
     default: Date.now(),
   },
+  remark: {
+    type: String,
+  },
 });
 
 export default mongoose.model("Investment", investmentSchema);

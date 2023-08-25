@@ -53,6 +53,7 @@ routes.fakeloan = async (req, res) => {
         repaymentterm: Math.floor(1 + Math.random() * 12),
         modeOfPayment: i % 2 ? "Bank Transfer" : "Cash",
         status: i % 3 ? (i % 2 ? "Approved" : "Declined") : "Pending",
+        remark: `Loan Narration ${i}`,
       };
 
       const newloan = new loanmodel(dta);
@@ -79,6 +80,7 @@ routes.fakeinvestment = async (req, res) => {
         amount: Math.floor(10000 + Math.random() * 90000),
         transactionType: i % 2 ? "Deposit" : "Withdraw",
         savingProfit: i % 2 ? "Saving" : "Profit",
+        remark: `Investment Narration ${i}`,
       };
 
       const newinvestment = new investmentmodel(dta);
@@ -127,6 +129,7 @@ routes.faketransaction = async (req, res) => {
         amount: loans[i].amount,
         transactionId: Math.floor(100000000 + Math.random() * 900000000),
         transactionType: "LoanGiven",
+        remark: loans[i].remark,
       };
       const newtransaction = new transactionmodel(dta);
       await newtransaction.save();
@@ -146,6 +149,7 @@ routes.faketransaction = async (req, res) => {
         amount: investments[i].amount,
         transactionId: Math.floor(100000000 + Math.random() * 900000000),
         transactionType: "Investment",
+        remark: investments[i].remark,
       };
       const newtransaction = new transactionmodel(dta);
       await newtransaction.save();
@@ -161,9 +165,36 @@ routes.faketransaction = async (req, res) => {
   }
 };
 
+routes.fakerepayment = async (req, res) => {
+  try {
+    const loans = await loanmodel.find({ status: "Approved" });
+    for (let i = 0; i < loans.length; i++) {
+      const dta = {
+        userId: loans[i].user,
+        amount: loans[i].amount,
+        transactionId: Math.floor(100000000 + Math.random() * 900000000),
+        transactionType: "LoanRepayment",
+        remark: loans[i].remark,
+      };
+      const newtransaction = new transactionmodel(dta);
+      await newtransaction.save();
+      loans[i].repaymenttransactionId = newtransaction._id;
+      await loans[i].save();
+
+      const user = await usermodel.findById(loans[i].user);
+      user.transactions.push(newtransaction._id);
+      await user.save();
+    }
+
+    res.status(200).json({ message: "Fake repayment added successfully" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 routes.fakeadmintransaction = async (req, res) => {
   try {
-    const admin = await adminModel.findById("64bfead7fbe0220d36a0ec6a");
+    const admin = await adminModel.findById("64e850ce66ac910199ede56f");
 
     const alltransactions = await transactionmodel.find({});
 
@@ -200,6 +231,22 @@ routes.fakecustomersupport = async (req, res) => {
     res
       .status(200)
       .json({ message: "Fake customer support added successfully" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+routes.deleteall = async (req, res) => {
+  try {
+    await usermodel.deleteMany({});
+    await loanmodel.deleteMany({});
+    await transactionmodel.deleteMany({});
+    await investmentmodel.deleteMany({});
+    await notificationmodel.deleteMany({});
+    await customerSupportModel.deleteMany({});
+    await adminModel.deleteMany({});
+
+    res.status(200).json({ message: "All data deleted successfully" });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

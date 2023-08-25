@@ -22,6 +22,7 @@ router.post("/sendpwdlink/:id", adminauth, adminController.sendpasslink);
 router.post("/setsavingpro/:id", adminauth, adminController.setsavingpro);
 
 // ----------------------------------------------Loan Details------------------------------------------------ //
+router.get("/loan/:id", adminauth, adminController.getloanbyid);
 router.get("/pendingloan", adminauth, adminController.getpendingloan);
 router.get("/approvedloan", adminauth, adminController.getapprovedloan);
 router.get("/rejectedloan", adminauth, adminController.getrejectedloan);
@@ -42,7 +43,11 @@ router.get("/gettransaction", adminauth, adminController.gettransaction);
 // ----------------------------------------------Customer Support------------------------------------------------ //
 router.get("/alltickets", adminauth, adminController.getCustomerSupport);
 router.get("/tickets/:id", adminauth, adminController.getCustomerSupportById);
-router.post("/pendingtickets", adminauth, adminController.getPendingCustomerSupport);
+router.post(
+  "/pendingtickets",
+  adminauth,
+  adminController.getPendingCustomerSupport
+);
 
 // ----------------------------------------------Admin Details------------------------------------------------ //
 router.get("/mydetails", adminauth, adminController.getadmintrans);
