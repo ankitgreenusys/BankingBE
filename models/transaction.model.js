@@ -16,12 +16,25 @@ const transactionSchema = new mongoose.Schema({
   },
   transactionType: {
     type: String,
-    enum: ["Deposit", "Withdraw", "LoanGiven", "LoanPaid", "Investment","LoanRepayment"],
+    enum: [
+      "Deposit",
+      "Withdraw",
+      "LoanGiven",
+      "LoanPaid",
+      "Investment",
+      "LoanRepayment",
+    ],
     required: true,
   },
   date: {
     type: Date,
     default: Date.now(),
+  },
+  modeofpayment: {
+    type: String,
+    enum: ["Cash", "Cheque", "Bank Transfer"],
+    default: "Cash",
+    required: true,
   },
   remark: {
     type: String,

@@ -194,7 +194,7 @@ routes.fakerepayment = async (req, res) => {
 
 routes.fakeadmintransaction = async (req, res) => {
   try {
-    const admin = await adminModel.findById("64e850ce66ac910199ede56f");
+    const admin = await adminModel.findById("64ec5938a50e0b5b76ff1f89");
 
     const alltransactions = await transactionmodel.find({});
 
