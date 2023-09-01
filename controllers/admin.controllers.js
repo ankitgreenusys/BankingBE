@@ -472,7 +472,7 @@ routes.rejectloan = async (req, res) => {
 
 routes.getinvestment = async (req, res) => {
   try {
-    const investments = await InvestmentModel.find().populate("userId");
+    const investments = await UserModel.find().populate("investment");
     res.status(200).json({ investments });
   } catch (error) {
     res.status(500).json({ error: "Something went wrong" });
@@ -485,7 +485,14 @@ routes.getinvestmentbyuser = async (req, res) => {
     const investments = await UserModel.findById(id)
       .populate("investment")
       .populate("transactions");
-    res.status(200).json({ investments });
+    // total amount
+    let totalamount = 0;
+
+    investments.investment.forEach((investment) => {
+      totalamount += investment.amount;
+    });
+
+    res.status(200).json({ investments, totalamount });
   } catch (error) {
     res.status(500).json({ error: "Something went wrong" });
   }
@@ -496,7 +503,26 @@ routes.getinvestmentbyuser = async (req, res) => {
 routes.gettransaction = async (req, res) => {
   try {
     const transactions = await TransactionModel.find().populate("userId");
-    res.status(200).json({ transactions });
+    // total profit
+    let totalprofit = 0;
+
+    // total deposit
+    let totaldeposit = 0;
+    transactions.forEach((transaction) => {
+      if (transaction.transactionType === "Investment")
+        totaldeposit += transaction.amount;
+    });
+
+    // total withdraw
+    let totalwithdraw = 0;
+    transactions.forEach((transaction) => {
+      if (transaction.transactionType === "LoanGiven")
+        totalwithdraw += transaction.amount;
+    });
+
+    res
+      .status(200)
+      .json({ transactions, totalprofit, totaldeposit, totalwithdraw });
   } catch (error) {
     res.status(500).json({ error: "Something went wrong" });
   }
