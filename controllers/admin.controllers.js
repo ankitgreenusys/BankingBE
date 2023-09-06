@@ -162,8 +162,16 @@ routes.getuser = async (req, res) => {
   try {
     const myuser = await UserModel.findById(id)
       .populate("transactions")
+      .populate("investment")
       .select("-password");
-    res.status(200).json({ myuser });
+
+    // total deposit
+    let totaldeposit = 0;
+    myuser.transactions.forEach((transaction) => {
+      if (transaction.transactionType === "Investment")
+        totaldeposit += transaction.amount;
+    });
+    res.status(200).json({ myuser, totaldeposit });
   } catch (error) {
     res.status(500).json({ error: "Something went wrong" });
   }
