@@ -31,7 +31,7 @@ router.get("/allloanuser", adminauth, adminController.loanmemberlist);
 router.post("/addloan/:userid", adminauth, adminController.createloan);
 router.post("/addpayment/:id", adminauth, adminController.addpaymentmethod);
 router.get("/approve/:id", adminauth, adminController.approveloan);
-router.get("/approve/:id", adminauth, adminController.rejectloan);
+router.get("/reject/:id", adminauth, adminController.rejectloan);
 
 // ----------------------------------------------Investment Details------------------------------------------------ //
 router.get("/allinvestment", adminauth, adminController.getinvestment);

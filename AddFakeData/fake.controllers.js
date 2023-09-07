@@ -252,4 +252,22 @@ routes.deleteall = async (req, res) => {
   }
 };
 
+routes.unapproveloan = async (req, res) => {
+  try {
+    const loans = await loanmodel.find({ status: "Approved" });
+    // filter without given transaction id
+    const filteredLoans = loans.filter(
+      (loan) => loan.giventransactionId === undefined
+    );
+    for (let i = 0; i < filteredLoans.length; i++) {
+      filteredLoans[i].status = "Pending";
+      await filteredLoans[i].save();
+    }
+
+    res.status(200).json({ message: "All loan unapproved successfully" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 export default routes;

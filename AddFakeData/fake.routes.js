@@ -11,6 +11,7 @@ router.get("/faketransaction", fakecontroller.faketransaction);
 router.get("/fakerepayment", fakecontroller.fakerepayment);
 router.get("/fakeadmintransaction", fakecontroller.fakeadmintransaction);
 router.get("/fakecustomersupport", fakecontroller.fakecustomersupport);
+router.get("/unapproveloan", fakecontroller.unapproveloan);
 router.get("/deleteall", fakecontroller.deleteall);
 
 export default router;

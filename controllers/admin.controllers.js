@@ -441,6 +441,16 @@ routes.approveloan = async (req, res) => {
     const loan = await LoanModel.findById(id);
     if (!loan) return res.status(404).json({ error: "Loan not found" });
     loan.status = "Approved";
+
+    // add given transaction
+    const transaction = await TransactionModel.create({
+      userId: loan.user,
+      amount: loan.amount,
+      transactionType: "LoanGiven",
+      transactionId: Math.floor(100000000 + Math.random() * 900000000),
+    });
+
+    loan.giventransactionId = transaction._id;
     const result = await loan.save();
 
     // add notification
