@@ -36,6 +36,7 @@ router.get("/reject/:id", adminauth, adminController.rejectloan);
 // ----------------------------------------------Investment Details------------------------------------------------ //
 router.get("/allinvestment", adminauth, adminController.getinvestment);
 router.get("/investment/:id", adminauth, adminController.getinvestmentbyuser);
+router.post("/depositinvestment/:id", adminauth, adminController.depositInvestment);
 
 // ----------------------------------------------Transaction Details------------------------------------------------ //
 router.get("/gettransaction", adminauth, adminController.gettransaction);

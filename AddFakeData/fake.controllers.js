@@ -5,6 +5,7 @@ import investmentmodel from "../models/investment.model.js";
 import notificationmodel from "../models/notification.model.js";
 import customerSupportModel from "../models/CustomerSupport.model.js";
 import adminModel from "../models/admin.model.js";
+import cardModel from "../models/card.model.js";
 
 // ----------------------------------------------Fake users------------------------------------------------ //
 
@@ -194,7 +195,7 @@ routes.fakerepayment = async (req, res) => {
 
 routes.fakeadmintransaction = async (req, res) => {
   try {
-    const admin = await adminModel.findById("64ec5938a50e0b5b76ff1f89");
+    const admin = await adminModel.findById("651111d0fc504de3ee7482cd");
 
     const alltransactions = await transactionmodel.find({});
 
@@ -235,6 +236,36 @@ routes.fakecustomersupport = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+routes.fakecards = async(req,res)=>{
+  try {
+    const users = await usermodel.find({isVerified:true});
+    for(let i = 0; i<users.length; i++){
+      
+    if (users[i].card) {
+      await cardModel.findByIdAndDelete(users[i].card);
+      users[i].card = null;
+      await users[i].save();
+    }
+      const dta = {
+        userId: users[i].id,
+        name:users[i].name, 
+        number: parseInt(users[i].id),
+        cvv:"123", 
+        expires:"12/23" 
+      };
+
+      const card = await cardModel.create(dta);
+      users[i].card = card.id;
+      
+     await users[i].save();
+    }
+    return res.status(200).json({ message: "Fake cards added successfully" })
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+}
+
 
 routes.deleteall = async (req, res) => {
   try {

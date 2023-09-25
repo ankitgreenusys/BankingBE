@@ -74,6 +74,11 @@ const userSchema = new mongoose.Schema({
     default: [],
     ref: "Loan",
   },
+  card: {
+    type: mongoose.Schema.Types.ObjectId,
+    default: null,
+    ref: "Card"
+  },
   investment: {
     type: Array,
     default: [],

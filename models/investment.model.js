@@ -20,7 +20,7 @@ const investmentSchema = new mongoose.Schema({
   },
   savingProfit: {
     type: String,
-    required: true,
+    // required: true,
   },
   date: {
     type: Date,

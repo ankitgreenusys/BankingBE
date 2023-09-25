@@ -9,6 +9,7 @@ import NotificationModel from "../models/notification.model.js";
 import sendOTP from "../utils/sendOTP.utils.js";
 import sendPassword from "../utils/sendPassword.utils.js";
 import CustomerSupportModel from "../models/CustomerSupport.model.js";
+import notificationModel from "../models/notification.model.js";
 
 const routes = {};
 
@@ -515,6 +516,55 @@ routes.getinvestmentbyuser = async (req, res) => {
     res.status(500).json({ error: "Something went wrong" });
   }
 };
+
+routes.depositInvestment = async (req, res) => {
+  try {
+    const {id} = req.params;
+    const { amount, modeofpayment, transactionId } = req.body;
+    const user = await UserModel.findById(id);
+    console.log(user)
+    if (!user) return res.status(404).json({ error: 'User not found' });
+
+    const dta = {
+      userId: user._id,
+      amount,
+      transactionType: "Investment",
+      savingprofit: user.savingprofit,
+    };
+
+    const newinvestment = new InvestmentModel(dta);
+    await newinvestment.save();
+
+
+    user.investment.push(newinvestment._id);
+
+
+    const transactiondta = {
+      userId: user._id,
+      amount,
+      transactionType: "Investment",
+      transactionId : transactionId ? transactionId : Math.floor(100000000 + Math.random() * 900000000)
+    };
+
+    const newtransaction = new TransactionModel(transactiondta);
+
+    await newtransaction.save();
+    console.log(newtransaction,"new")
+    user.transactions.push(newtransaction._id);
+
+    user.balance += amount;
+
+
+    await user.save();
+
+    return res.status(200).json({ currentBalance: user.balance, investment: newinvestment, transaction: newtransaction });
+
+  } catch (error) {
+    console.log(error)
+    return res.status(500).json({ error: 'Something went wrong' });
+  }
+}
+
 
 // ----------------------------------------------Transaction Details------------------------------------------------ //
 
