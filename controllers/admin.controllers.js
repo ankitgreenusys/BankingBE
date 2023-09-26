@@ -521,12 +521,11 @@ routes.depositInvestment = async (req, res) => {
     const {id} = req.params;
     const { amount, transactionId, remark } = req.body;
     const user = await UserModel.findById(id);
-    console.log(user)
     if (!user) return res.status(404).json({ error: 'User not found' });
     const Amount = parseInt(amount);
     const dta = {
       userId: user._id,
-      Amount,
+      amount: Amount,
       transactionType: "Investment",
       savingprofit: user.savingprofit,
       remark
@@ -541,7 +540,7 @@ routes.depositInvestment = async (req, res) => {
 
     const transactiondta = {
       userId: user._id,
-      Amount,
+      amount: Amount,
       transactionType: "Investment",
       transactionId : transactionId ? transactionId : Math.floor(100000000 + Math.random() * 900000000)
     };
@@ -549,7 +548,6 @@ routes.depositInvestment = async (req, res) => {
     const newtransaction = new TransactionModel(transactiondta);
 
     await newtransaction.save();
-    console.log(newtransaction,"new")
     user.transactions.push(newtransaction._id);
 
     user.balance += Amount;
@@ -557,7 +555,7 @@ routes.depositInvestment = async (req, res) => {
 
     await user.save();
 
-    return res.status(200).json({ currentBalance: user.balance, investment: newinvestment, transaction: newtransaction });
+    return res.status(200).json({ investment: newinvestment});
 
   } catch (error) {
     console.log(error)
