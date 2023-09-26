@@ -523,7 +523,7 @@ routes.depositInvestment = async (req, res) => {
     const user = await UserModel.findById(id);
     console.log(user)
     if (!user) return res.status(404).json({ error: 'User not found' });
-    const Amount = parent(amount);
+    const Amount = parseInt(amount);
     const dta = {
       userId: user._id,
       Amount,
