@@ -520,6 +520,7 @@ routes.depositInvestment = async (req, res) => {
   try {
     const {id} = req.params;
     const { amount, transactionId, remark } = req.body;
+    console.log(req.body,"body");
     const user = await UserModel.findById(id);
     if (!user) return res.status(404).json({ error: 'User not found' });
     const Amount = parseInt(amount);
@@ -530,10 +531,10 @@ routes.depositInvestment = async (req, res) => {
       savingprofit: user.savingprofit,
       remark
     };
-
+    console.log(Amount)
     const newinvestment = new InvestmentModel(dta);
     await newinvestment.save();
-
+    console.log(newinvestment)
 
     user.investment.push(newinvestment._id);
 
