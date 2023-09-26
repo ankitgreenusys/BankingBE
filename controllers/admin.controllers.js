@@ -9,7 +9,6 @@ import NotificationModel from "../models/notification.model.js";
 import sendOTP from "../utils/sendOTP.utils.js";
 import sendPassword from "../utils/sendPassword.utils.js";
 import CustomerSupportModel from "../models/CustomerSupport.model.js";
-import notificationModel from "../models/notification.model.js";
 
 const routes = {};
 
@@ -520,7 +519,7 @@ routes.getinvestmentbyuser = async (req, res) => {
 routes.depositInvestment = async (req, res) => {
   try {
     const {id} = req.params;
-    const { amount, modeofpayment, transactionId } = req.body;
+    const { amount, transactionId, remark } = req.body;
     const user = await UserModel.findById(id);
     console.log(user)
     if (!user) return res.status(404).json({ error: 'User not found' });
@@ -530,6 +529,7 @@ routes.depositInvestment = async (req, res) => {
       amount,
       transactionType: "Investment",
       savingprofit: user.savingprofit,
+      remark
     };
 
     const newinvestment = new InvestmentModel(dta);
